@@ -2,4 +2,4 @@ whereami
 ========
 bonjour le monde
 
-npm install
+npm install express

@@ -6,8 +6,8 @@ app.get('/places', function(req, res){
     getPlaces(location, res);
 });
  
-app.listen('8081');
-console.log('Magic happens on port 8081');
+app.listen('8082');
+console.log('Sorcery happens on port 8082');
 exports = module.exports = app;
 
 

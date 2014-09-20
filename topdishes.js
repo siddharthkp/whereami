@@ -165,6 +165,7 @@ function filterMenuWords (words) {
 }
 
 function giveMeFood(reviews) {
+    console.log('nom nom nom');
     reviews = reviews.join('. ');
     reviews = reviews.toLowerCase().replace(/:/g, '').replace(/!/g, '');
     var combinations = getCombinations(reviews);
@@ -181,6 +182,7 @@ function giveMeFood(reviews) {
 }
 
 function addImages(dishes) {
+    console.log('adding le jazz');
     for (i in dishes) {
       var options = {
           host: 'ajax.googleapis.com',
@@ -206,6 +208,7 @@ function sendResponseIfAllSet(dishes) {
     if (!dishes[i].image_url) {
       return;
     }
+    console.log('send the goodies');
     res.send({
         top_dishes: dishes
     });

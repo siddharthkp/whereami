@@ -1,13 +1,13 @@
 var express = require('express');
 var app     = express();
  
-app.get('/places', function(req, res){
+app.get('/whereami', function(req, res){
     var location = req.query.location;
     getPlaces(location, res);
 });
  
-app.listen('8082');
-console.log('Sorcery happens on port 8082');
+app.listen('8089');
+console.log('You are on port 8089');
 exports = module.exports = app;
 
 
@@ -38,25 +38,18 @@ function fetch(options) {
         });
         response.on('end', function() {
             data = JSON.parse(data);
-            var names = getNames(data);
-            respond('names', names);
             if (data.results.length > 1) {
-              getLocation(data.results[1].place_id);  
+                place = data.results[1];
             } else {
-              getLocation(data.results[0].place_id);
+                place = data.results[0];
             }
+            var name = place.name;
+            respond('name', name);
+            getLocation(place.place_id);
+            //getImage(name);
         });
     }
     https.get(options, callback).end();
-
-}
-
-function getNames(data) {
-  var names = [];
-  for (i in data.results) {
-    names.push(data.results[i].name);
-  }
-  return names;
 }
 
 function getLocation(placeId) {
@@ -78,14 +71,35 @@ function getLocation(placeId) {
     https.get(options, callback).end();
 }
 
+function getImage(name) {
+    var options = {
+        host: 'localhost',
+        path: '/about?name=' + name + '&location=' + address,
+        port: 8081
+    };
+    var callback = function(response) {
+        var data = '';
+        response.on('data', function(chunk) {
+            data += chunk;
+        });
+        response.on('end', function() {
+            image_url = data.image_url;
+            respond('image_url', image_url);
+        });
+    }
+    https.get(options, callback).end();
+}
+
 var response = {
-    'names': [],
-    'address': null
+    name: null,
+    address: null,
+    image_url: null
 }
 
 function respond(type, value) {
     response[type] = value;
-    if (response.names.length && response.address) {
+    //if (response.name && response.address && response.image_url) {
+    if (response.name && response.address) {
       res.send(response);
     }
 }

@@ -27,6 +27,7 @@ function getPlaces (location, responder) {
 }
 
 function fetch(location) {
+    console.log('fetching location');
     var url = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json?types=food'; 
     url += '&key=' + key;
     url += '&radius=' + radius;
@@ -34,19 +35,27 @@ function fetch(location) {
     request(url, function (error, response, data) {
         if (!error && response.statusCode == 200) {
             data = JSON.parse(data);
-            var place;
-            if (data.results.length > 1) {
-                place = data.results[1];
-            } else {
-                place = data.results[0];
+            var places = [];
+            if (!data.results.length) {
+                res.send(places);
+                return;
             }
-            if (!place) {
-                res.send(null);
+            for (var i in data.results) {
+                places.push({
+                    name: data.results[i].name,
+                });
             }
-            var name = place.name;
+            for (var i in places) {
+                if (places[i].name === 'K & K' || places[i].name === 'Hunan') {
+                    var temp = places[i];
+                    places.splice(i, 1);
+                    places.unshift(temp);
+                }
+            }
             res.send({
-                'name': name
+                'places': places,
             });
         }
     });
 }
+

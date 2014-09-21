@@ -48,8 +48,10 @@ function fetch(location) {
             }
             for (var i in places) {
                 if (places[i].name === 'K & K' || places[i].name === 'Hunan') {
-                    places[i].image_url = 'http://dc337.4shared.com/img/7flqsQgQ/s7/1415f54b180/06_k__k_itc_gardenia.jpg';
-                    if (places[i].name === 'Hunun') {
+                    if (places[i].name === 'K & K') {
+                        places[i].image_url = 'http://dc337.4shared.com/img/7flqsQgQ/s7/1415f54b180/06_k__k_itc_gardenia.jpg';
+                    }
+                    if (places[i].name === 'Hunan') {
                         places[i].name = 'Moscow Mule';
                     }
                     var temp = places[i];

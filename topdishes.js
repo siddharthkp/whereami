@@ -66,8 +66,8 @@ function fetch(location) {
 }
 
 function getReviews(place) {
-    console.log('fetching reviews for' + place.name);
-    var url = 'http://localhost:8081/about?name=' + encodeURIComponent(place.name) + '&location=' + place.location;
+    console.log('fetching reviews for ' + place.name);
+    var url = 'http://shifu.practodev.com:8081/about?name=' + encodeURIComponent(place.name) + '&location=' + place.location;
     request(url, function (error, response, data) {
         data = JSON.parse(data);
         reviews = data.reviews;
@@ -77,7 +77,7 @@ function getReviews(place) {
 
 function getMenuImages(place) {
     console.log('fetching menu images');
-    var url = 'http://localhost:8081/menuphotos?name=' + encodeURIComponent(place.name) + '&location=' + place.location;
+    var url = 'http://shifu.practodev.com:8081/menuphotos?name=' + encodeURIComponent(place.name) + '&location=' + place.location;
     request(url, function (error, response, data) {
         if (typeof data === 'string') {
           data = JSON.parse(data);
@@ -88,7 +88,7 @@ function getMenuImages(place) {
 }
 
 function getMeMenu(menuImage, place) {
-  var url = 'http://shifu.practodev.com/imagemenu?image_url=' + encodeURIComponent(menuImage);
+    var url = 'http://shifu.practodev.com/imagemenu?image_url=' + encodeURIComponent(menuImage);
     if (place.name === 'K & K') {
       url += '&kk=1';
     } else if (place.name === 'Moscow Mule') {
@@ -96,7 +96,7 @@ function getMeMenu(menuImage, place) {
     }
     request(url, function (error, response, data) {
         data = JSON.parse(data);
-        var menuItems = data.menu;
+        var menuItems = data;
         var menu = [];
         for (i in menuItems) {
           menu.push(menuItems[i].name);
@@ -210,22 +210,12 @@ function giveMeFood(reviews, menu) {
 function addImages(dishes) {
     console.log('adding images');
     for (i in dishes) {
-      var options = {
-          host: 'ajax.googleapis.com',
-          path: '/ajax/services/search/images?v=1.0&q=' + encodeURI(dishes[i].name + ' food'),
-      };
-      var callback = function(response) {
-          var data = '';
-          response.on('data', function(chunk) {
-              data += chunk;
-          });
-          response.on('end', function() {
-              data = JSON.parse(data);
-              dishes[i].image_url = data.responseData.results[0].url;
-              sendResponseIfAllSet(dishes);
-          });
-      }
-      https.get(options, callback).end();
+      var url = 'https://ajax.googleapis.com/ajax/services/search/images?v=1.0&q=' + encodeURI(dishes[i].name + ' food');
+      request(url, function (error, response, data) {
+          data = JSON.parse(data);
+          dishes[i].image_url = data.responseData.results[0].url;
+          sendResponseIfAllSet(dishes);
+      });
     }
 }
 

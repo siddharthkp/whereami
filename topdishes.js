@@ -70,7 +70,10 @@ function getMenuImages(place) {
     console.log('fetching menu images');
     var url = 'http://localhost:8081/menuphotos?name=' + encodeURIComponent(place.name) + '&location=' + place.location;
     request(url, function (error, response, data) {
-        menuImage = data.menuImages[0];
+        if (typeof data === 'string') {
+          data = JSON.parse(data);
+        }
+        var menuImage = data.menuImages[0];
         getMeMenu(menuImage, place);
     });
 }

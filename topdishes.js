@@ -95,6 +95,7 @@ function getMeMenu(menuImage, place) {
         url += '&mm=1';
     }
     request(url, function (error, response, data) {
+        data = JSON.parse(data);
         var menuItems = data.menu;
         var menu = [];
         for (i in menuItems) {
@@ -186,10 +187,6 @@ function filterMenuWords (words, menu) {
 
 function giveMeFood(reviews, menu) {
     console.log('feed the hungry');
-    res.send({
-        reviews: reviews,
-        menu: menu
-    });
     reviews = reviews.join('. ');
     reviews = reviews.toLowerCase().replace(/:/g, '').replace(/!/g, '');
     var combinations = getCombinations(reviews);

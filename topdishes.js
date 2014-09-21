@@ -62,7 +62,7 @@ function getReviews(place) {
     request(url, function (error, response, data) {
         data = JSON.parse(data);
         reviews = data.reviews;
-        giveMeFood(reviews);
+        getMenuImages(place);
     });
 }
 

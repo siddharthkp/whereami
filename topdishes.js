@@ -80,6 +80,8 @@ function getMeMenu(menuImage, place) {
     var url = 'http://localhost/imagemenu?image_url=' + menuImage;
     if (place.name === 'K & K') {
       url += '&kk=1';
+    } else if (place.name === 'Moscow Mule') {
+        url += '&mm=1';
     }
     request(url, function (error, response, data) {
         var menuItems = data.menu;

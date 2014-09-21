@@ -58,7 +58,7 @@ function fetch(location) {
 
 function getReviews(place) {
     console.log('fetching reviews');
-    var url = 'http://localhost:8081/about?name=' + encodeURIComponenet(place.name + '&location=' + place.location);;
+    var url = 'http://localhost:8081/about?name=' + encodeURIComponent(place.name + '&location=' + place.location);;
     request(url, function (error, response, data) {
         data = JSON.parse(data);
         reviews = data.reviews;
@@ -68,7 +68,7 @@ function getReviews(place) {
 
 function getMenuImages(place) {
     console.log('fetching menu images');
-    var url = 'http://localhost:8081/menuphotos=' + encodeURIComponenet(place.name + '&location=' + place.location);
+    var url = 'http://localhost:8081/menuphotos=' + encodeURIComponent(place.name + '&location=' + place.location);
     request(url, function (error, response, data) {
         menuImage = data.menuImages[0];
         getMeMenu(menuImage, place);

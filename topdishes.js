@@ -46,11 +46,11 @@ function fetch(location) {
                 name: data.results[0].name,
                 location: data.results[0].vicinity
             }
-            if (places[i].name === 'K & K' || places[i].name === 'Hunan') {
-                if (places[i].name === 'Hunan') {
-                    places[i].name = 'Moscow Mule';
+            if (place.name === 'K & K' || place.name === 'Hunan') {
+                if (place.name === 'Hunan') {
+                    place.name = 'Moscow Mule';
                 }
-                var temp = places[i];
+                var temp = place;
                 places.splice(i, 1);
                 places.unshift(temp)
             };

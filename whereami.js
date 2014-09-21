@@ -47,6 +47,9 @@ function fetch(location) {
             }
             for (var i in places) {
                 if (places[i].name === 'K & K' || places[i].name === 'Hunan') {
+                    if (places[i].name === 'Hunun') {
+                        places[i].name = 'Moscow Mule';
+                    }
                     var temp = places[i];
                     places.splice(i, 1);
                     places.unshift(temp);

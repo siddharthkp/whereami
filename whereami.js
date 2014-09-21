@@ -1,7 +1,6 @@
+var request = require('request');
 var express = require('express');
 var app     = express();
-
-var request = require('request');
 
  
 app.get('/whereami', function(req, res){
@@ -15,8 +14,6 @@ exports = module.exports = app;
 
 
 //location = 12.9669362,77.5953564
-var https = require('https');
-var https2 = require('https');
 var key = 'AIzaSyArBmLVB_OqHZAiQo7zoSzbnAiDjkPZ03o';
 var radius = 25;
 var host = 'maps.googleapis.com';

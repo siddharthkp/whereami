@@ -88,7 +88,7 @@ function getMenuImages(place) {
 }
 
 function getMeMenu(menuImage, place) {
-    var url = 'http://localhost/imagemenu?image_url=' + menuImage;
+  var url = 'http://shifu.practodev.com/imagemenu?image_url=' + encodeURIComponent(menuImage);
     if (place.name === 'K & K') {
       url += '&kk=1';
     } else if (place.name === 'Moscow Mule') {

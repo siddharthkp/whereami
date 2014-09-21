@@ -31,6 +31,7 @@ function getPlaces (location, responder) {
 }
 
 function fetch(options) {
+    console.log('getting name');
     var callback = function(response) {
         var data = '';
         response.on('data', function(chunk) {
@@ -49,15 +50,16 @@ function fetch(options) {
                 return;
             }
             var name = place.name;
+            console.log('got name');
             respond('name', name);
             getLocation(place.place_id);
-            
         });
     }
     https.get(options, callback).end();
 }
 
 function getLocation(placeId) {
+    console.log('getting location');
     var path = '/maps/api/place/details/json?placeid=' + placeId + '&key=' + key;
     var options = {
         host: host,
@@ -70,6 +72,7 @@ function getLocation(placeId) {
         });
         response.on('end', function() {
             data = JSON.parse(data);
+            console.log('got location');
             respond('address', data.result.formatted_address);
         });
     }

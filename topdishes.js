@@ -1,7 +1,6 @@
 var request = require('request');
 var express = require('express');
 require('./stemmer.js');
-require('./menu.js');
 var app     = express();
 
  
@@ -67,6 +66,30 @@ function getReviews(place) {
     });
 }
 
+function getMenuImages(place) {
+    console.log('fetching menu images');
+    var url = 'http://localhost:8081/menuPhotos=' + place.name + '&location=' + place.location;
+    request(url, function (error, response, data) {
+        data = JSON.parse(data);
+        menuImage = data.menuImages[0];
+        getMeMenu(menuImage, place);
+    });
+}
+
+function getMeMenu(menuImage, place) {
+    var url = 'http://localhost/imagemenu=' + menuImage;
+    if (place.name === 'K & K') {
+      url += '&kk=1';
+    }
+    request(url, function (error, response, data) {
+        var menuItems = data.menu;
+        var menu = [];
+        for (i in menuItems) {
+          menu.push(menuItems[i].name);
+        }
+        giveMeFood(reviews, menu);
+    });   
+}
 
 
 function in_array (needle, haystack) {
@@ -134,7 +157,7 @@ function getCombinations (input) {
   return combinations;
 }
 
-function filterMenuWords (words) {
+function filterMenuWords (words, menu) {
   console.log('filtering menu items');
   var menuItems = [];
   for (i in menu) {
@@ -148,12 +171,12 @@ function filterMenuWords (words) {
   return menuItems;
 }
 
-function giveMeFood(reviews) {
+function giveMeFood(reviews, menu) {
     console.log('feed the hungry');
     reviews = reviews.join('. ');
     reviews = reviews.toLowerCase().replace(/:/g, '').replace(/!/g, '');
     var combinations = getCombinations(reviews);
-    var menuWords = filterMenuWords(combinations);
+    var menuWords = filterMenuWords(combinations, menu);
     var popularWords = menuWords;
     if (!popularWords.length) {
         console.log('nothing to see here');

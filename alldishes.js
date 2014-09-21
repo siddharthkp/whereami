@@ -86,7 +86,7 @@ function getMeMenu(menuImage, place) {
     }
     request(url, function (error, response, data) {
         res.send({
-          all_dishes: JSON.parse(data);
+          all_dishes: JSON.parse(data)
       });
     });
 }

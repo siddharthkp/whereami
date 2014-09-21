@@ -77,7 +77,7 @@ function getMenuImages(place) {
 }
 
 function getMeMenu(menuImage, place) {
-    var url = 'http://localhost/imagemenu=' + menuImage;
+    var url = 'http://localhost/imagemenu?image_url=' + menuImage;
     if (place.name === 'K & K') {
       url += '&kk=1';
     }

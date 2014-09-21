@@ -85,10 +85,8 @@ function getMeMenu(menuImage, place) {
         url += '&mm=1';
     }
     request(url, function (error, response, data) {
-        var menuItems = data.menu;
-        var menu = [];
         res.send({
-          all_dishes: dishes
+          all_dishes: data
       });
-    });   
+    });
 }

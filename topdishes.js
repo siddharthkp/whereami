@@ -1,23 +1,24 @@
+var request = require('request');
 var express = require('express');
 require('./stemmer.js');
 require('./menu.js');
 var app     = express();
+
  
 app.get('/topdishes', function(req, res){
+  console.log('came here')
     var location = req.query.location;
     getPlaces(location, res);
 });
  
 app.listen('8090');
-console.log('Whats cooking at port 8090');
+console.log('You are on port 8090');
 exports = module.exports = app;
 
 
 //location = 12.9669362,77.5953564
-var https = require('https');
-var http = require('http');
 var key = 'AIzaSyArBmLVB_OqHZAiQo7zoSzbnAiDjkPZ03o';
-var radius = 25;
+var radius = 200;
 var host = 'maps.googleapis.com';
 var path = '/maps/api/place/nearbysearch/json?types=food' + '&key=' + key + '&radius=' + radius;
 
@@ -25,67 +26,48 @@ var path = '/maps/api/place/nearbysearch/json?types=food' + '&key=' + key + '&ra
 var res = null;
 function getPlaces (location, responder) {
   res = responder;
-  path += '&location=' + location;
-    var options = {
-        host: host,
-        path: path,
-    };
-  fetch(options);
+  fetch(location);
 }
 
-function fetch(options) {
-    var callback = function(response) {
-        var data = '';
-        response.on('data', function(chunk) {
-            data += chunk;
-        });
-        response.on('end', function() {
+function fetch(location) {
+    console.log('fetching location');
+    var url = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json?types=food'; 
+    url += '&key=' + key;
+    url += '&radius=' + radius;
+    url += '&location=' + location;
+    request(url, function (error, response, data) {
+        if (!error && response.statusCode == 200) {
             data = JSON.parse(data);
-            if (data.results.length > 1) {
-                place = data.results[1];
-            } else {
-                place = data.results[0];
+            var place = {};
+            if (!data.results.length) {
+                res.send(null);
+                return;
             }
-            var name = place.name;
-            getLocation(place.place_id);
-        });
-    }
-    https.get(options, callback).end();
+            var place = {
+                name: data.results[0].name,
+                location: data.results[0].vicinity
+            }
+            if (place.name === 'K & K' || place.name === 'Hunan') {
+                if (place.name === 'Hunun') {
+                    place.name = 'Moscow Mule';
+                }
+            }
+            getReviews(place);
+        }
+    });
 }
 
-function getLocation(placeId) {
-    var path = '/maps/api/place/details/json?placeid=' + placeId + '&key=' + key;
-    var options = {
-        host: host,
-        path: path
-    };
-    var callback = function(response) {
-        var data = '';
-        response.on('data', function(chunk) {
-            data += chunk;
-        });
-        response.on('end', function() {
-            data = JSON.parse(data);
-            getReviews(data.result.name, data.result.formatted_address);
-        });
-    }
-    https.get(options, callback).end();
+function getReviews(place) {
+    console.log('fetching reviews');
+    var url = 'http://localhost:8081/about?name=' + place.name + '&location=' + place.location;
+    request(url, function (error, response, data) {
+        data = JSON.parse(data);
+        reviews = data.reviews;
+        giveMeFood(reviews);
+    });
 }
 
-function getReviews(name, address) {
-    var callback = function(response) {
-        var data = '';
-        response.on('data', function(chunk) {
-            data += chunk;
-        });
-        response.on('end', function() {
-            data = JSON.parse(data);
-            reviews = data.reviews;
-            giveMeFood(reviews);
-        });
-    }
-    http.get('http://localhost:8081/about?name=' + name + '&location=' + address, callback).end();
-}
+
 
 function in_array (needle, haystack) {
   for (key in haystack) {
@@ -99,7 +81,7 @@ function in_array (needle, haystack) {
 var stopwords = ['1','2','3','4','5','6','7','8','9','0','one','two','three','four','five','about','actually','always','even','given','into','just','not','Im','thats','its','arent','weve','ive','didnt','dont','the','of','to','and','a','in','is','it','you','that','he','was','for','on','are','with','as','I','his','they','be','at','one','have','this','from','or','had','by','hot','but','some','what','there','we','can','out','were','all','your','when','up','use','how','said','an','each','she','which','do','their','if','will','way','many','then','them','would','like','so','these','her','see','him','has','more','could','go','come','did','my','no','get','me','say','too','here','must','such','try','us','own','oh','any','youll','youre','also','than','those','though','thing','things'];
 
 function checkWords(input) {
-
+  console.log('mining reviews');
   var words = input;
   var wordcount = {};
 
@@ -133,6 +115,7 @@ function checkWords(input) {
 }
 
 function getCombinations (input) {
+  console.log('complicating life');
   var words = input.split(' ');
   var combinations = [];
   var combination = '';
@@ -152,6 +135,7 @@ function getCombinations (input) {
 }
 
 function filterMenuWords (words) {
+  console.log('filtering menu items');
   var menuItems = [];
   for (i in menu) {
     menu[i] = menu[i].toLowerCase();
@@ -165,12 +149,11 @@ function filterMenuWords (words) {
 }
 
 function giveMeFood(reviews) {
-    console.log('nom nom nom');
+    console.log('feed the hungry');
     reviews = reviews.join('. ');
     reviews = reviews.toLowerCase().replace(/:/g, '').replace(/!/g, '');
     var combinations = getCombinations(reviews);
     var menuWords = filterMenuWords(combinations);
-    //var popularWords = checkWords(menuWords);
     var popularWords = menuWords;
     var dishes = [];
     for (i in popularWords) {
@@ -182,7 +165,7 @@ function giveMeFood(reviews) {
 }
 
 function addImages(dishes) {
-    console.log('adding le jazz');
+    console.log('adding images');
     for (i in dishes) {
       var options = {
           host: 'ajax.googleapis.com',
@@ -208,7 +191,6 @@ function sendResponseIfAllSet(dishes) {
     if (!dishes[i].image_url) {
       return;
     }
-    console.log('send the goodies');
     res.send({
         top_dishes: dishes
     });

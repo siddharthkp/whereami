@@ -186,6 +186,10 @@ function filterMenuWords (words, menu) {
 
 function giveMeFood(reviews, menu) {
     console.log('feed the hungry');
+    res.send({
+        reviews: reviews,
+        menu: menu
+    });
     reviews = reviews.join('. ');
     reviews = reviews.toLowerCase().replace(/:/g, '').replace(/!/g, '');
     var combinations = getCombinations(reviews);

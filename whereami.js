@@ -38,6 +38,7 @@ function fetch(options) {
         });
         response.on('end', function() {
             data = JSON.parse(data);
+            var place;
             if (data.results.length > 1) {
                 place = data.results[1];
             } else {
@@ -46,7 +47,7 @@ function fetch(options) {
             var name = place.name;
             respond('name', name);
             getLocation(place.place_id);
-            //getImage(name);
+            
         });
     }
     https.get(options, callback).end();
@@ -71,34 +72,13 @@ function getLocation(placeId) {
     https.get(options, callback).end();
 }
 
-function getImage(name) {
-    var options = {
-        host: 'localhost',
-        path: '/about?name=' + name + '&location=' + address,
-        port: 8081
-    };
-    var callback = function(response) {
-        var data = '';
-        response.on('data', function(chunk) {
-            data += chunk;
-        });
-        response.on('end', function() {
-            image_url = data.image_url;
-            respond('image_url', image_url);
-        });
-    }
-    https.get(options, callback).end();
-}
-
 var response = {
     name: null,
-    address: null,
-    image_url: null
+    address: null
 }
 
 function respond(type, value) {
     response[type] = value;
-    //if (response.name && response.address && response.image_url) {
     if (response.name && response.address) {
       res.send(response);
     }

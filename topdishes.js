@@ -155,6 +155,11 @@ function giveMeFood(reviews) {
     var combinations = getCombinations(reviews);
     var menuWords = filterMenuWords(combinations);
     var popularWords = menuWords;
+    if (!popularWords.length) {
+        res.send({
+            top_dishes: []
+        });
+    }
     var dishes = [];
     for (i in popularWords) {
       dishes.push({

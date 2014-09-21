@@ -15,7 +15,7 @@ exports = module.exports = app;
 
 //location = 12.9669362,77.5953564
 var key = 'AIzaSyArBmLVB_OqHZAiQo7zoSzbnAiDjkPZ03o';
-var radius = 25;
+var radius = 200;
 var host = 'maps.googleapis.com';
 var path = '/maps/api/place/nearbysearch/json?types=food' + '&key=' + key + '&radius=' + radius;
 
@@ -43,10 +43,12 @@ function fetch(location) {
             for (var i in data.results) {
                 places.push({
                     name: data.results[i].name,
+                    location: data.results[i].vicinity
                 });
             }
             for (var i in places) {
                 if (places[i].name === 'K & K' || places[i].name === 'Hunan') {
+                    places[i].image_url = 'http://dc337.4shared.com/img/7flqsQgQ/s7/1415f54b180/06_k__k_itc_gardenia.jpg';
                     if (places[i].name === 'Hunun') {
                         places[i].name = 'Moscow Mule';
                     }
@@ -55,9 +57,22 @@ function fetch(location) {
                     places.unshift(temp);
                 }
             }
-            res.send({
-                'places': places,
-            });
+            if (!places[0].image_url) {
+                console.log('fetching image');
+                var imageUrl = 'https://ajax.googleapis.com/ajax/services/search/images?v=1.0&q=';
+                imageUrl += encodeURI(places[0].name + ' bangalore'),
+                request(imageUrl, function (error, response, data) {
+                    data = JSON.parse(data);
+                    places[0].image_url = data.responseData.results[0].url;
+                    res.send({
+                        'places': places,
+                    });
+                });
+            } else {
+                res.send({
+                    'places': places,
+                });
+            }
         }
     });
 }

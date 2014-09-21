@@ -66,7 +66,7 @@ function fetch(location) {
 }
 
 function getReviews(place) {
-    console.log('fetching reviews');
+    console.log('fetching reviews for' + place.name);
     var url = 'http://localhost:8081/about?name=' + encodeURIComponent(place.name) + '&location=' + place.location;
     request(url, function (error, response, data) {
         data = JSON.parse(data);

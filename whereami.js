@@ -44,6 +44,10 @@ function fetch(options) {
             } else {
                 place = data.results[0];
             }
+            if (!place) {
+                res.send(null);
+                return;
+            }
             var name = place.name;
             respond('name', name);
             getLocation(place.place_id);

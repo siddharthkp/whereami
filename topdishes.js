@@ -156,6 +156,7 @@ function giveMeFood(reviews) {
     var menuWords = filterMenuWords(combinations);
     var popularWords = menuWords;
     if (!popularWords.length) {
+        console.log('nothing to see here');
         res.send({
             top_dishes: []
         });

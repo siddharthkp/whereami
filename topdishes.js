@@ -42,18 +42,24 @@ function fetch(location) {
                 res.send(null);
                 return;
             }
-            var place = {
-                name: data.results[0].name,
-                location: data.results[0].vicinity
-            }
-            if (place.name === 'K & K' || place.name === 'Hunan') {
-                if (place.name === 'Hunan') {
-                    place.name = 'Moscow Mule';
+            var places = data.results;
+            for (var i in places) {
+                if (places[i].name === 'K & K' || places[i].name === 'Hunan') {
+                    if (places[i].name === 'K & K') {
+                        places[i].image_url = 'http://dc337.4shared.com/img/7flqsQgQ/s7/1415f54b180/06_k__k_itc_gardenia.jpg';
+                    }
+                    if (places[i].name === 'Hunan') {
+                        places[i].name = 'Moscow Mule';
+                    }
+                    var temp = places[i];
+                    places.splice(i, 1);
+                    places.unshift(temp);
                 }
-                var temp = place;
-                places.splice(i, 1);
-                places.unshift(temp)
-            };
+            }
+            var place = {
+                name: places[0].name,
+                location: places[0].vicinity
+            }
             getReviews(place);
         }
     });
